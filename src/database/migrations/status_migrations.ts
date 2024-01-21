@@ -1,22 +1,21 @@
 import db from "../database"
 
-export class UserMigration {
+export class StatusMigration {
 
-    static table_name = 'users'
+    static table_name = 'statuses'
 
     static migrate() {
 
-        db.query(`DROP TABLE IF EXISTS users;`, (error, result) => {
+        db.query(`DROP TABLE IF EXISTS statuses;`, (error, result) => {
             if (error) return console.log(error)
         })
+
         db.query(`
-        CREATE TABLE users (
+        CREATE TABLE statuses (
             id INT PRIMARY KEY AUTO_INCREMENT,
-            name VARCHAR(255) NOT NULL,
-            email VARCHAR(255) UNIQUE NOT NULL,
-            password VARCHAR(255) NOT NULL,
-            status MEDIUMINT,
-            role MEDIUMINT,
+            status_key VARCHAR(255) NOT NULL,
+            status_id MEDIUMINT NOT NULL,
+            status_name VARCHAR(255) UNIQUE NOT NULL,
             created_at datetime,
             updated_at datetime
        );`, 

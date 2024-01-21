@@ -1,6 +1,6 @@
 import db from '../database'
 
-export class UserQuery implements Query {
+export class AuthQuery implements Query {
     index(): string {
         throw new Error("Method not implemented.");
     }
@@ -12,5 +12,9 @@ export class UserQuery implements Query {
     }
     delete(): string {
         throw new Error("Method not implemented.");
+    }
+
+    login(user:LoginRequest):string{
+        return `SELECT * FROM users WHERE email = ${db.escape(user.getEmail())} AND password = ${db.escape(user.getPassword())};`
     }
 }

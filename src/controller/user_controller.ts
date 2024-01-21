@@ -3,7 +3,7 @@ import { ParamsDictionary } from "express-serve-static-core";
 import { ParsedQs } from "qs";
 import Controller from "./controller";
 
-class UserController implements Controller {
+export class UserController implements Controller {
     index(req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>): Response<any, Record<string, any>> {
         throw new Error("Method not implemented.");
     }
