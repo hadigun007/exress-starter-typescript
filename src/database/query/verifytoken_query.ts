@@ -1,4 +1,5 @@
 import db from '../database'
+import { Query } from './query';
 
 export class VerifyTokenQuery implements Query {
     index(): string {

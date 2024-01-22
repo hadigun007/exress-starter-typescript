@@ -1,4 +1,4 @@
-interface Query {
+export interface Query {
     index():string
     create(data:any):string
     show(data:any):string

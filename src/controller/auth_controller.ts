@@ -9,6 +9,7 @@ import { AuthQuery } from "../database/query/auth_query";
 import { VerifyTokenModel, VerifyTokenQuery } from "../database/query/verifytoken_query";
 import { SuccessResponse } from "../response/success_response";
 import { LoginResponse } from "../model/response/login_response";
+import { LoginRequest } from "../model/request/login_request";
 
 export class AuthController implements Controller {
     static login(req:Request, res:Response){

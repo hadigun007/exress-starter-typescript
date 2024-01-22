@@ -1,4 +1,6 @@
+import { LoginRequest } from '../../model/request/login_request';
 import db from '../database'
+import { Query } from './query';
 
 export class AuthQuery implements Query {
     index(): string {
