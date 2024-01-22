@@ -17,6 +17,6 @@ export class AuthQuery implements Query {
     }
 
     login(user:LoginRequest):string{
-        return `SELECT * FROM users WHERE email = ${db.escape(user.getEmail())} AND password = ${db.escape(user.getPassword())};`
+        return `SELECT * FROM users WHERE email = ${db.escape(user.getEmail())};`
     }
 }

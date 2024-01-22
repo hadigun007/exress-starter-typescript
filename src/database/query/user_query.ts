@@ -7,6 +7,7 @@ export class UserQuery implements Query {
     create(): string {
         throw new Error("Method not implemented.");
     }
+    
     show(): string {
         throw new Error("Method not implemented.");
     }

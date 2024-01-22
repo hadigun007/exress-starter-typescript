@@ -6,7 +6,10 @@ export class VerifyTokenQuery implements Query {
         throw new Error("Method not implemented.");
     }
     create(data:VerifyTokenModel): string {
-        return `INSERT INTO users SET (verify_token) VALUES (${db.escape(data.getVerifyToken())}) WHERE id = ${db.escape(data.getUserId())};`
+        return `UPDATE users SET verify_token = ${db.escape(data.getVerifyToken())} WHERE id = ${db.escape(data.getUserId())};`
+    }
+    getByVtoken(vtoken:string){
+        return `SELECT * FROM users where verify_token = ${db.escape(vtoken)};`
     }
     show(): string {
         throw new Error("Method not implemented.");

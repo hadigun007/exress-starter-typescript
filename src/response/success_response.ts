@@ -1,5 +1,6 @@
 import {Response} from 'express'
 import { LoginResponse } from '../model/response/login_response'
+import { GenerateOTPResponse } from '../model/response/generate_response'
 
 export class SuccessResponse {
     static indexSuccess(res: Response, token:string, data:any){
@@ -52,6 +53,16 @@ export class SuccessResponse {
             code: 1005,
             message: "success",
             status: "Login success",
+            token: token,
+            data: data
+        })
+    }
+    
+    static generateOTPResponse(res: Response, token:string, data:GenerateOTPResponse){
+        return res.status(200).json({
+            code: 1005,
+            message: "success",
+            status: "Generate OTP success",
             token: token,
             data: data
         })

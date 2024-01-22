@@ -68,6 +68,15 @@ export class FailedResponse {
             token: token
         })
     }
+    
+    static loginFailed(res: Response, token:string){
+        return res.status(500).json({
+            code: 2008,
+            message: "failed",
+            status: "User credentials failed",
+            token: token
+        })
+    }
 
     
 }
