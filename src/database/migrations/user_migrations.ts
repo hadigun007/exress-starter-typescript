@@ -15,14 +15,26 @@ export class UserMigration {
             name VARCHAR(255) NOT NULL,
             email VARCHAR(255) UNIQUE NOT NULL,
             password VARCHAR(255) NOT NULL,
-            status MEDIUMINT,
-            role MEDIUMINT,
+            status_id INT NOT NULL,
+            FOREIGN KEY (status_id) REFERENCES statuses(id),
+            role VARCHAR(255) NOT NULL,
             created_at datetime,
             updated_at datetime
+
        );`, 
        (error, result) => {
             if (error) return console.log(error)
             console.log(`✅ migrate table ${this.table_name} berhasil`)
         })
+
+        db.query(`
+        INSERT INTO users
+        (id, name, email, password, status_id, role)
+        VALUES 
+        (1, 'ROOT', 'root@mail.com', '$2a$10$3zoB8RuTA1JfVRCPgESWQuEGNdxqCqzX9K0KNbJHsF0iN04fVQp/y', 3, 'root');
+        `,(error, result)=>{
+            if (error) return console.log(error)
+            console.log(`✅ seeder table ${this.table_name} berhasil`)
+        } )
     }
 }
