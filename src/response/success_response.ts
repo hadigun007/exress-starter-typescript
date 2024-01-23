@@ -60,11 +60,20 @@ export class SuccessResponse {
     
     static generateOTPResponse(res: Response, token:string, data:GenerateOTPResponse){
         return res.status(200).json({
-            code: 1005,
+            code: 1006,
             message: "success",
             status: "Generate OTP success",
             token: token,
             data: data
+        })
+    }
+    static verifyOTPSuccess(res: Response, token:string){
+        return res.status(200).json({
+            code: 1007,
+            message: "success",
+            status: "Verify OTP success",
+            token: token,
+            data: null
         })
     }
 }

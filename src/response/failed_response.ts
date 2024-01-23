@@ -77,6 +77,14 @@ export class FailedResponse {
             token: token
         })
     }
+    static verifyOTPFailed(res: Response, token:string){
+        return res.status(500).json({
+            code: 2008,
+            message: "failed",
+            status: "Verify OTP failed",
+            token: token
+        })
+    }
 
     
 }
