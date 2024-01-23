@@ -85,6 +85,20 @@ export class FailedResponse {
             token: token
         })
     }
-
-    
+    static jwtFailed(res: Response, token:string){
+        return res.status(500).json({
+            code: 2009,
+            message: "failed",
+            status: "JWT failed",
+            token: token
+        })
+    }
+    static apiKeyFailed(res: Response, token:string){
+        return res.status(500).json({
+            code: 2010,
+            message: "failed",
+            status: "Api Key failed",
+            token: token
+        })
+    }
 }

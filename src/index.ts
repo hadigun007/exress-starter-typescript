@@ -1,6 +1,5 @@
 import express, { urlencoded } from 'express';
 import dotenv from 'dotenv';
-import middleware from './midleware/middleware';
 import public_route from './routes/public_routes'
 import private_route from './routes/private_routes'
 var bodyParser = require('body-parser')

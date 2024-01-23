@@ -7,8 +7,6 @@ const userc = new UserController()
 
 private_route.use(middleware)
 
-private_route.post('/user/create', userc.store)
-
-
+private_route.post('/user/create', middleware, userc.store)
 
 export default private_route

@@ -1,13 +1,14 @@
 import mysql from 'mysql'
 import dotenv from 'dotenv';
+import config from '../../config.json'
 
 dotenv.config();
 
 var connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'root',
-    database: 'express_starter_db'
+    host: config.database.host,
+    user: config.database.user.name,
+    password:  config.database.user.password,
+    database: config.database.database
 });
 
 connection.on('connect', () => {
