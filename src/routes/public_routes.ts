@@ -4,8 +4,9 @@ import { OTPController } from '../controller/otp_controller';
 
 const public_route = express.Router()
 
+
 public_route.post('/auth/login', AuthController.login)
 public_route.get('/auth/generate_2fa/:vtoken', OTPController.generate)
 public_route.post('/auth/verify_2fa', OTPController.verify)
 
-export {public_route}
+export default public_route
