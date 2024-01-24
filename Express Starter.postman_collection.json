@@ -1,0 +1,111 @@
+{
+	"info": {
+		"_postman_id": "abbb1ec4-9922-41fc-97ce-36967482a71a",
+		"name": "Express Starter",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16633136"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\":\"root@mail.com\",\n    \"password\":\"adminsku\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host_local}}/auth/login",
+							"host": [
+								"{{host_local}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{host_local_private}}/user/create",
+							"host": [
+								"{{host_local_private}}"
+							],
+							"path": [
+								"user",
+								"create"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "OTP",
+			"item": [
+				{
+					"name": "Generate",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Verify",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"verify_token\":\"71f870b258216256595f19c2da9d797c093488a33c1aacb5\",\n    \"otp_code\":766656\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host_local}}/auth/verify_2fa",
+							"host": [
+								"{{host_local}}"
+							],
+							"path": [
+								"auth",
+								"verify_2fa"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
