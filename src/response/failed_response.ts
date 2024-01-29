@@ -4,40 +4,40 @@ export class FailedResponse {
     static indexFailed(res: Response, token:string){
         return res.status(500).json({
             code: 2000,
-            message: "failed",
-            status: "Index data failed",
+            status: "failed",
+            message: "Index data failed",
             token: token
         })
     }
     static storeFailed(res: Response, token:string){
         return res.status(500).json({
             code: 2001,
-            message: "failed",
-            status: "Store data failed",
+            status: "failed",
+            message: "Store data failed",
             token: token
         })
     }
     static showFailed(res: Response, token:string){
         return res.status(500).json({
             code: 2002,
-            message: "failed",
-            status: "Show data failed",
+            status: "failed",
+            message: "Show data failed",
             token: token
         })
     }
     static updateFailed(res: Response, token:string){
         return res.status(500).json({
             code: 2003,
-            message: "failed",
-            status: "Update data failed",
+            status: "failed",
+            message: "Update data failed",
             token: token
         })
     }
     static deleteFailed(res: Response, token:string){
         return res.status(500).json({
             code: 2004,
-            message: "failed",
-            status: "Delete data failed",
+            status: "failed",
+            message: "Delete data failed",
             token: token
         })
     }
@@ -45,8 +45,8 @@ export class FailedResponse {
     static bodyFailed(res: Response, token:string){
         return res.status(500).json({
             code: 2005,
-            message: "failed",
-            status: "Request data is incomplete",
+            status: "failed",
+            message: "Request data is incomplete",
             token: token
         })
     }
@@ -54,8 +54,8 @@ export class FailedResponse {
     static queryFailed(res: Response, token:string){
         return res.status(500).json({
             code: 2006,
-            message: "failed",
-            status: "Failed when processing data (quey error)",
+            status: "failed",
+            message: "Failed when processing data (quey error)",
             token: token
         })
     }
@@ -63,8 +63,8 @@ export class FailedResponse {
     static userFreezed(res: Response, token:string){
         return res.status(500).json({
             code: 2007,
-            message: "failed",
-            status: "User is freezed",
+            status: "failed",
+            message: "User is freezed",
             token: token
         })
     }
@@ -72,32 +72,41 @@ export class FailedResponse {
     static loginFailed(res: Response, token:string){
         return res.status(500).json({
             code: 2008,
-            message: "failed",
-            status: "User credentials failed",
+            status: "failed",
+            message: "User credentials failed",
             token: token
         })
     }
     static verifyOTPFailed(res: Response, token:string){
         return res.status(500).json({
             code: 2008,
-            message: "failed",
-            status: "Verify OTP failed",
+            status: "failed",
+            message: "Verify OTP failed",
             token: token
         })
     }
     static jwtFailed(res: Response, token:string){
         return res.status(500).json({
             code: 2009,
-            message: "failed",
-            status: "JWT failed",
+            status: "failed",
+            message: "JWT failed",
             token: token
         })
     }
     static apiKeyFailed(res: Response, token:string){
         return res.status(500).json({
             code: 2010,
-            message: "failed",
-            status: "Api Key failed",
+            status: "failed",
+            message: "Api Key failed",
+            token: token
+        })
+    }
+
+    static recordNotFound(res: Response, token:string, data:string){
+        return res.status(500).json({
+            code: 2006,
+            status: "failed",
+            message: `${data} not found`,
             token: token
         })
     }

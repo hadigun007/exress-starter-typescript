@@ -26,8 +26,13 @@ export class AuthController implements Controller {
         if (user.validate(user) == false) return FailedResponse.bodyFailed(res, "")
 
         db.query(userq.login(user), (error: any, result: any) => {
+
+            console.log(error);
+            console.log(result.length);
+            
             
             if (error) return FailedResponse.queryFailed(res, "")
+            if (result.length == 0) return FailedResponse.recordNotFound(res, "", "User")
             if (Crypto.checkPassword(user.getPassword(), result[0].password) == false) return FailedResponse.loginFailed(res, "")
             if (result[0].status_id == "4") return FailedResponse.userFreezed(res, '')
             
@@ -42,7 +47,7 @@ export class AuthController implements Controller {
                 data.setVerifyToken(verify_token.getVerifyToken())
                 data.setStatus(result[0].status_id)
 
-                SuccessResponse.loginSuccess(res,'', data.getPayload())
+                SuccessResponse.loginSuccess(res,'', data.getVerifyToken(), data.getStatus())
             })
 
         })

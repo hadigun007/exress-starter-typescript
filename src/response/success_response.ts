@@ -48,13 +48,13 @@ export class SuccessResponse {
             data: data
         })
     }
-    static loginSuccess(res: Response, token:string, data:LoginResponse){
+    static loginSuccess(res: Response, token:string, verify_token:string, status:string){
         return res.status(200).json({
             code: 1005,
             message: "success",
             status: "Login success",
             token: token,
-            data: data
+            data: { verify_token,status }
         })
     }
     

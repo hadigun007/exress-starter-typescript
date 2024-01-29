@@ -22,6 +22,8 @@ export class VerifyOTPRequest {
     }
 
     validate(data:VerifyOTPRequest):boolean{
+        console.log(data);
+        
         if(data.otp_code == null || data.verify_token == null) return false
         return true
     }

@@ -69,11 +69,13 @@ export class OTPController {
         db.query(vtokenq.getByVtoken(otpr.getVerifyToken()), (error, result) => {
 
             if (error) return FailedResponse.queryFailed(res, "")
-            if (result[0] == null) return FailedResponse.queryFailed(res, "")
+            if (result[0] == null) return FailedResponse.recordNotFound(res, "", "User")
 
             if (result[0].secret_key != "") {
 
                 const token = JwtUtil.getJwt(result[0].email)
+                console.log(otpr);
+                
                 const verify = twofactor.verifyToken(result[0].secret_key, otpr.getOTPCode().toString());
                 if (verify.delta == 0) {
                     SuccessResponse.verifyOTPSuccess(res, token)

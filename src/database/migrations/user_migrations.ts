@@ -34,7 +34,7 @@ export class UserMigration {
         INSERT INTO users
         (id, name, email, password, status_id, role)
         VALUES 
-        (1, 'ROOT', 'root@mail.com', '$2a$10$3zoB8RuTA1JfVRCPgESWQuEGNdxqCqzX9K0KNbJHsF0iN04fVQp/y', 3, 'root');
+        (1, 'ROOT', 'root@mail.com', '$2a$10$3zoB8RuTA1JfVRCPgESWQuEGNdxqCqzX9K0KNbJHsF0iN04fVQp/y', 1, 'root');
         `,(error, result)=>{
             if (error) return console.log(error)
             console.log(`✅ seeder table ${this.table_name} berhasil`)
