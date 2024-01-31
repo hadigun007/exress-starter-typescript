@@ -98,10 +98,23 @@ export class UserModel {
 
     validateLogin(user: UserModel) {
         console.log(user);
-        
+
         if (
             user.getEmail().length == 0 ||
             user.getPassword().length == 0
+        ) return false
+        return true
+    }
+
+    valaidateUpdate(user: UserModel): boolean {
+        console.log(user);
+        
+        if (
+            user.getName() == undefined &&
+            user.getEmail() == undefined &&
+            user.getStatusId() == undefined &&
+            user.getPassword() == undefined &&
+            user.getRole() == undefined 
         ) return false
         return true
     }

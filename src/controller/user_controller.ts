@@ -73,8 +73,35 @@ export class UserController implements BaseController {
 
 
     }
-    update(req: Request, res: Response): Response {
-        throw new Error("Method not implemented.");
+
+    update(req: Request, res: Response): any {
+        const token = JwtUtil.getJwt()
+        const user = new UserModel()
+        const keyval = new KeyVal()
+        const userq = new UserQuery()
+
+        user.setId(req.body["id"])
+        user.setName(req.body["name"])
+        user.setEmail(req.body["email"])
+        user.setPassword(req.body["password"])
+        user.setStatusId(req.body["status_id"])
+        user.setRole(req.body["role"])
+
+        if(user.valaidateUpdate(user) == false) return FailedResponse.bodyFailed(res, "")
+
+        db.query(userq.update(user), (error, result)=>{
+            console.log(error);
+            
+            if (error) return FailedResponse.queryFailed(res, "")
+            if (result.affectedRows == 0) return FailedResponse.recordNotFound(res, "", "User")
+
+            SuccessResponse.updateSuccess(res, token, '')
+        })
+
+
+
+
+
     }
     destroy(req: Request, res: Response): Response {
         throw new Error("Method not implemented.");

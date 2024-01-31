@@ -4,6 +4,7 @@ export interface BaseQuery {
     index():string
     create(data:any):string
     show(data:any):string
+    update(data:any):string
     delete(data:any):string
 }
 

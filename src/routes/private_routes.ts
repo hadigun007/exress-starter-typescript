@@ -14,3 +14,11 @@ private_route.put('/user/update', userc.update)
 private_route.delete('/user/delete/:user_id', userc.destroy)
 
 export default private_route
+
+
+// Update T
+// SET A = CASE WHEN A IS NOT NULL THEN 'Value' ELSE A END,
+//     B = CASE WHEN B IS NOT NULL THEN 'Value' ELSE B END,
+//     C = CASE WHEN C IS NOT NULL THEN 'Value' ELSE C END
+//     D = CASE WHEN D IS NOT NULL THEN 'Value' ELSE D END
+// FROM Table1 T

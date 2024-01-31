@@ -3,6 +3,9 @@ import db from '../database'
 import { BaseQuery } from './query';
 
 export class VerifyTokenQuery implements BaseQuery {
+    update(data: any): string {
+        throw new Error('Method not implemented.');
+    }
     index(): string {
         throw new Error("Method not implemented.");
     }
