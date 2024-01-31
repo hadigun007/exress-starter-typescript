@@ -8,10 +8,25 @@ import { FailedResponse } from "../response/failed_response";
 import db from '../database/database'
 import { UserQuery } from "../database/query/user_query";
 import { SuccessResponse } from "../response/success_response";
+import { AuthController } from "./auth_controller";
+import { JwtUtil } from "../util/jwt_util";
+import { ToArray } from "../util/to_array";
 
 export class UserController implements Controller {
-    index(req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>): Response<any, Record<string, any>> {
-        throw new Error("Method not implemented.");
+    index(req: Request, res: Response): any {
+        const userq = new UserQuery()
+        const user = new AuthController().authuser
+        const token = JwtUtil.getJwt(user.getEmail())
+
+        db.query(userq.index(), (error, result)=>{
+            if (error) return FailedResponse.queryFailed(res, "")
+            if (result.length == 0) return FailedResponse.queryFailed(res, "")
+
+            const data = ToArray.convertUsers(result)
+
+            SuccessResponse.indexSuccess(res, token, data)
+        })
+
     }
 
 
@@ -37,13 +52,13 @@ export class UserController implements Controller {
 
 
 
-    show(req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>): Response<any, Record<string, any>> {
+    show(req: Request, res: Response): Response {
         throw new Error("Method not implemented.");
     }
-    update(req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>): Response<any, Record<string, any>> {
+    update(req: Request, res: Response): Response {
         throw new Error("Method not implemented.");
     }
-    destroy(req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>): Response<any, Record<string, any>> {
+    destroy(req: Request, res: Response): Response {
         throw new Error("Method not implemented.");
     }
     

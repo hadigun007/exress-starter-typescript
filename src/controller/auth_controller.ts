@@ -10,9 +10,13 @@ import { VerifyTokenModel, VerifyTokenQuery } from "../database/query/verifytoke
 import { SuccessResponse } from "../response/success_response";
 import { LoginResponse } from "../model/response/login_response";
 import { LoginRequest } from "../model/request/login_request";
+import { UserModel } from "../model/user_model";
 
 export class AuthController implements Controller {
-    static login(req:Request, res:Response){
+
+    private authUser = new UserModel()
+
+    login(req:Request, res:Response){
         const verify_token = new VerifyTokenModel()
         const user = new LoginRequest()
         const userq = new AuthQuery()
@@ -26,10 +30,6 @@ export class AuthController implements Controller {
         if (user.validate(user) == false) return FailedResponse.bodyFailed(res, "")
 
         db.query(userq.login(user), (error: any, result: any) => {
-
-            console.log(error);
-            console.log(result.length);
-            
             
             if (error) return FailedResponse.queryFailed(res, "")
             if (result.length == 0) return FailedResponse.recordNotFound(res, "", "User")
@@ -41,11 +41,15 @@ export class AuthController implements Controller {
 
             db.query(verifytokenq.create(verify_token), (error2, result2) => {
                 
+                
                 if (error2) return FailedResponse.queryFailed(res, "")
                 if (result.length == 0) return FailedResponse.queryFailed(res, "")
-               
+                
                 data.setVerifyToken(verify_token.getVerifyToken())
                 data.setStatus(result[0].status_id)
+                
+                AuthController.setAuthUser(result[0])
+
 
                 SuccessResponse.loginSuccess(res,'', data.getVerifyToken(), data.getStatus())
             })
@@ -53,13 +57,29 @@ export class AuthController implements Controller {
         })
     }
 
-
-
-
-
-
     
-    static logout(){}
+    logout(){}
+
+
+    public  get authuser(){
+        return this.authUser
+    }
+
+    static setAuthUser(user:any):void{
+        // this.authUser.setId(user.id)
+        // this.authUser.setName(user.name)
+        // this.authUser.setEmail(user.email)
+        // this.authUser.setPassword(user.password)
+        // this.authUser.setVToken(user.verify_token)
+        // this.authUser.setSecretKey(user.secret_key)
+        // this.authUser.setOtpauthUrl(user.setotpauth_url)
+        // this.authUser.setStatusId(user.status_id)
+        // this.authUser.setRole(user.role)
+        // this.authUser.setCreatedAt(user.created_at)
+        // this.authUser.setUpdatedAt(user.updated_at)
+    }
+
+
 
     index(req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>): Response<any, Record<string, any>> {
         throw new Error("Method not implemented.");

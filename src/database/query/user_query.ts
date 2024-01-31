@@ -5,7 +5,9 @@ import { Query } from './query';
 
 export class UserQuery implements Query {
     index(): string {
-        throw new Error("Method not implemented.");
+        return `
+        SELECT * FROM users;
+        `
     }
     create(user: UserModel): string {
         return `
