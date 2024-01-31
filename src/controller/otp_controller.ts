@@ -46,6 +46,7 @@ export class OTPController {
 
                         data.setSecretKey(newSecret.secret)
                         data.setVerifyToken(random)
+                        data.setOtpauthUrl(newSecret.uri)
 
                         SuccessResponse.generateOTPResponse(res, '', data)
                     })
