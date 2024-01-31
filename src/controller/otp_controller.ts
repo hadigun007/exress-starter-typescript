@@ -12,6 +12,8 @@ import { VerifyTokenModel } from "../model/verify_token_model";
 const twofactor = require("node-2fa");
 import * as otp from '../interface/otp_controller'
 import { JwtUtil } from "../util/jwt_util";
+import { UserModel } from "../model/user_model";
+import config from '../../config.json'
 
 export class OTPController implements otp.OTPController {
 
@@ -22,46 +24,43 @@ export class OTPController implements otp.OTPController {
         const otpq = new OTPQuery()
         const data = new GenerateOTPResponse()
         const random = Crypto.randomHex(24)
+        const user = new UserModel()
+        const newSecret = twofactor.generateSecret({ name: config.app_name, account: "root" });
+
+
+        user.setSecretKey(Crypto.encryptString(newSecret.secret))
+        user.setOtpauthUrl(Crypto.encryptString(newSecret.uri))
 
         otp.setVerifyToken(req.params["vtoken"])
 
         if (otp.validate(otp) == false) return FailedResponse.bodyFailed(res, "")
 
         db.query(vtokenq.getByVtoken(otp.getVerifyToken()), (error, result) => {
+            if (error) return FailedResponse.queryFailed(res, "")
+            if (result.length == 0) return FailedResponse.queryFailed(res, "")
+
+            user.setId(result[0].id)
+            vtoken.setVerifyToken(random)
+            vtoken.setUserId(result[0].id)
+
 
             if (error) return FailedResponse.queryFailed(res, "")
             if (result[0] == null) return FailedResponse.recordNotFound(res, "", "User")
-
-            console.log(result);
             if (result[0].secret_key == null && result[0].otpauth_url == null) {
-                const newSecret = twofactor.generateSecret({ name: "Starter", account: "root" });
-
-                db.query(otpq.createSecret(newSecret, result[0].id), (error2, result2) => {
+                db.query(otpq.createSecret(user), (error2, result2) => {
                     if (error2) return FailedResponse.queryFailed(res, "")
                     if (result2.affectedRows == 0) return FailedResponse.queryFailed(res, "")
-
-                    vtoken.setVerifyToken(random)
-                    vtoken.setUserId(result[0].id)
-
-                    db.query(vtokenq.create(vtoken), (error3, result3) => {
-                        if (error3) return FailedResponse.queryFailed(res, "")
-                        if (result3.affectedRows == 0) return FailedResponse.queryFailed(res, "")
-
-                        data.setSecretKey(newSecret.secret)
-                        data.setVerifyToken(random)
-                        data.setOtpauthUrl(newSecret.uri)
-
-                        SuccessResponse.generateOTPResponse(res, '', data)
-                    })
                 })
             }
-            else {
-                data.setSecretKey(result[0].secret_key)
-                data.setVerifyToken(random)
-                data.setOtpauthUrl(result[0].otpauth_url)
+            db.query(vtokenq.create(vtoken), (error3, result3) => {
+                if (error3) return FailedResponse.queryFailed(res, "")
+                if (result3.affectedRows == 0) return FailedResponse.queryFailed(res, "")
+            })
+            data.setSecretKey(Crypto.decryptString(user.getSecretKey()))
+            data.setVerifyToken(random)
+            data.setOtpauthUrl(Crypto.decryptString(user.getOtpauthUrl()))
 
-                SuccessResponse.generateOTPResponse(res, '', data)
-            }
+            SuccessResponse.generateOTPResponse(res, '', data)
         })
     }
 
@@ -79,11 +78,11 @@ export class OTPController implements otp.OTPController {
 
         db.query(vtokenq.getByVtoken(otpr.getVerifyToken()), (error, result) => {
 
+
             if (error) return FailedResponse.queryFailed(res, "")
             if (result[0] == null) return FailedResponse.recordNotFound(res, "", "User")
 
-            console.log(result[0].secret_key);
-            const verify = twofactor.verifyToken(result[0].secret_key, otpr.getOTPCode().toString());
+            const verify = twofactor.verifyToken(Crypto.decryptString(result[0].secret_key), otpr.getOTPCode().toString());
 
             if (verify != null) {
                 if (verify.delta == 0) {
@@ -94,7 +93,7 @@ export class OTPController implements otp.OTPController {
 
                         SuccessResponse.verifyOTPSuccess(res, token)
                     })
-                }else {
+                } else {
                     FailedResponse.verifyOTPFailed(res, '')
                 }
             } else {

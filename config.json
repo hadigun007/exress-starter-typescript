@@ -1,4 +1,5 @@
 {
+    "app_name":"Express Starter",
     "host":"http://127.0.0.1",
     "port":"8080",
     "env":"developmnet",
@@ -15,5 +16,8 @@
     "jwt":{
         "key":"biytsfiytv89uyw80q2jkNOubus8t7",
         "age":"1h"
+    },
+    "aes":{
+        "key":"iuhgoTFOUG756r9&GO&CtdxhfdJKGJH"
     }
 }
