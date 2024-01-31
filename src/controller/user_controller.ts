@@ -1,22 +1,18 @@
 import { Request, Response } from "express";
-import { ParamsDictionary } from "express-serve-static-core";
-import { ParsedQs } from "qs";
-import Controller from "./controller";
 import { UserModel } from "../model/user_model";
 import { Crypto } from "../util/crypto";
 import { FailedResponse } from "../response/failed_response";
 import db from '../database/database'
 import { UserQuery } from "../database/query/user_query";
 import { SuccessResponse } from "../response/success_response";
-import { AuthController } from "./auth_controller";
 import { JwtUtil } from "../util/jwt_util";
 import { ToArray } from "../util/to_array";
+import { BaseController } from '../interface/base_controller'
 
-export class UserController implements Controller {
+export class UserController implements BaseController {
     index(req: Request, res: Response): any {
         const userq = new UserQuery()
-        const user = new AuthController().authuser
-        const token = JwtUtil.getJwt(user.getEmail())
+        const token = JwtUtil.getJwt()
 
         db.query(userq.index(), (error, result)=>{
             if (error) return FailedResponse.queryFailed(res, "")
@@ -26,12 +22,9 @@ export class UserController implements Controller {
 
             SuccessResponse.indexSuccess(res, token, data)
         })
-
     }
 
-
-
-    store(req: Request, res: Response):any {
+    store(req: Request, res: Response): any {
         const new_user = new UserModel()
         const userq = new UserQuery()
         new_user.setName(req.body["name"])
@@ -39,18 +32,16 @@ export class UserController implements Controller {
         new_user.setPassword(Crypto.hashPassword(req.body["password"]))
         new_user.setRole(req.body["role"])
 
-        if(new_user.valaidateCreate(new_user) == false) FailedResponse.bodyFailed(res, '') 
+        if (new_user.valaidateCreate(new_user) == false) FailedResponse.bodyFailed(res, '')
 
-        db.query(userq.create(new_user), (error, result)=>{
-            
+        db.query(userq.create(new_user), (error, result) => {
+
             if (error) return FailedResponse.queryFailed(res, "")
             if (result.affectedRows == 0) return FailedResponse.storeFailed(res, "")
 
             return SuccessResponse.storeSuccess(res, '', null)
         })
     }
-
-
 
     show(req: Request, res: Response): Response {
         throw new Error("Method not implemented.");
@@ -61,7 +52,7 @@ export class UserController implements Controller {
     destroy(req: Request, res: Response): Response {
         throw new Error("Method not implemented.");
     }
-    
+
 }
 
 // function create(req: Request, res: Response) {

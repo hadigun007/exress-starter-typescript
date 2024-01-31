@@ -3,36 +3,39 @@ import { GenerateOTPRequest } from "../model/request/generateotp_request";
 import { FailedResponse } from "../response/failed_response";
 import { Crypto } from "../util/crypto";
 import db from '../database/database'
-import { VerifyTokenModel, VerifyTokenQuery } from "../database/query/verifytoken_query";
+import { VerifyTokenQuery } from "../database/query/verifytoken_query";
 import { OTPQuery } from "../database/query/otp_query";
 import { GenerateOTPResponse } from "../model/response/generate_response";
 import { SuccessResponse } from "../response/success_response";
 import { VerifyOTPRequest } from "../model/request/verifyotp_request";
-import { JwtUtil } from "../util/jwt_util";
+import { VerifyTokenModel } from "../model/verify_token_model";
 const twofactor = require("node-2fa");
+import * as otp from '../interface/otp_controller'
 
-export class OTPController {
-    static generate(req: Request, res: Response) {
+export class OTPController implements otp.OTPController {
+
+
+    generate(req: Request, res: Response):any {
         const otp = new GenerateOTPRequest()
-        const random = Crypto.randomHex(24)
         const vtokenq = new VerifyTokenQuery()
         const vtoken = new VerifyTokenModel()
         const otpq = new OTPQuery()
         const data = new GenerateOTPResponse()
+        const random = Crypto.randomHex(24)
 
         otp.setVerifyToken(req.params["vtoken"])
 
         if (otp.validate(otp) == false) return FailedResponse.bodyFailed(res, "")
-
+        
         db.query(vtokenq.getByVtoken(otp.getVerifyToken()), (error, result) => {
-
+            
             if (error) return FailedResponse.queryFailed(res, "")
             if (result[0] == null) return FailedResponse.recordNotFound(res, "", "User")
-
-
-            if (result[0].secret_key == null || result[0].secret_key == "") {
+            
+            console.log(result);
+            if (result[0].secret_key == null && result[0].otpauth_url == null) {
                 const newSecret = twofactor.generateSecret({ name: "Starter", account: "root" });
-                console.log(newSecret)
+                
                 db.query(otpq.createSecret(newSecret, result[0].id), (error2, result2) => {
                     if (error2) return FailedResponse.queryFailed(res, "")
                     if (result2.affectedRows == 0) return FailedResponse.queryFailed(res, "")
@@ -62,7 +65,7 @@ export class OTPController {
         })
     }
 
-    static verify(req: Request, res: Response) {
+    verify(req: Request, res: Response):any {
         const otpr = new VerifyOTPRequest()
         const vtokenq = new VerifyTokenQuery()
         const otpq = new OTPQuery()
@@ -76,7 +79,7 @@ export class OTPController {
             if (error) return FailedResponse.queryFailed(res, "")
             if (result[0] == null) return FailedResponse.recordNotFound(res, "", "User")
 
-            const token = JwtUtil.getJwt(result[0].email)
+            // const token = JwtUtil.getJwt(result[0].email)
             const verify = twofactor.verifyToken(result[0].secret_key, otpr.getOTPCode().toString());
             if (verify != null) {
                 console.log("jojo");
@@ -90,11 +93,11 @@ export class OTPController {
                             if (error2) return FailedResponse.queryFailed(res, "")
                             if (result2.affectedRows == 0) return FailedResponse.queryFailed(res, "")
                             
-                            SuccessResponse.verifyOTPSuccess(res, token)
+                            // SuccessResponse.verifyOTPSuccess(res, token)
                         })
                     } else {
                         console.log("jojo 3");
-                        SuccessResponse.verifyOTPSuccess(res, token)
+                        // SuccessResponse.verifyOTPSuccess(res, token)
                     }
                 }
             } else {
@@ -122,4 +125,5 @@ export class OTPController {
             // }
         })
     }
+
 }

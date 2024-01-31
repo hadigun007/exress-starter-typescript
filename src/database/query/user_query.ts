@@ -1,9 +1,10 @@
 import { UserModel } from '../../model/user_model';
 import { Momment } from '../../util/moment';
 import db from '../database'
-import { Query } from './query';
+import { BaseQuery } from './query';
 
-export class UserQuery implements Query {
+export class UserQuery implements BaseQuery {
+
     index(): string {
         return `
         SELECT * FROM users;
@@ -32,13 +33,3 @@ export class UserQuery implements Query {
         throw new Error("Method not implemented.");
     }
 }
-
-// db.query(`
-//         INSERT INTO users
-//         (id, name, email, password, status_id, role)
-//         VALUES 
-//         (1, 'ROOT', 'root@mail.com', '$2a$10$3zoB8RuTA1JfVRCPgESWQuEGNdxqCqzX9K0KNbJHsF0iN04fVQp/y', 3, 'root');
-//         `,(error, result)=>{
-//             if (error) return console.log(error)
-//             console.log(`✅ seeder table ${this.table_name} berhasil`)
-//         } )
