@@ -107,14 +107,18 @@ export class UserModel {
     }
 
     valaidateUpdate(user: UserModel): boolean {
-        console.log(user);
-        
         if (
             user.getName() == undefined &&
             user.getEmail() == undefined &&
             user.getStatusId() == undefined &&
             user.getPassword() == undefined &&
             user.getRole() == undefined 
+        ) return false
+        return true
+    }
+    valaidateDestroy(user: UserModel): boolean {
+        if (
+            user.getId() == undefined 
         ) return false
         return true
     }

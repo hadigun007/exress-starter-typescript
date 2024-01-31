@@ -77,7 +77,6 @@ export class UserController implements BaseController {
     update(req: Request, res: Response): any {
         const token = JwtUtil.getJwt()
         const user = new UserModel()
-        const keyval = new KeyVal()
         const userq = new UserQuery()
 
         user.setId(req.body["id"])
@@ -97,14 +96,23 @@ export class UserController implements BaseController {
 
             SuccessResponse.updateSuccess(res, token, '')
         })
-
-
-
-
-
     }
-    destroy(req: Request, res: Response): Response {
-        throw new Error("Method not implemented.");
+
+    destroy(req: Request, res: Response): any {
+        const token = JwtUtil.getJwt()
+        const user = new UserModel()
+        const userq = new UserQuery()
+
+        user.setId(req.params["id"])
+
+        if(user.valaidateDestroy(user) == false) return FailedResponse.bodyFailed(res, "")
+
+        db.query(userq.delete(user), (error: any, result: any) => {
+            if (error) return FailedResponse.queryFailed(res, "")
+            if (result.affectedRows == 0) return FailedResponse.recordNotFound(res, "", "User")
+
+            SuccessResponse.deleteSuccess(res, token, '')
+        })
     }
 
 }

@@ -43,7 +43,9 @@ export class UserQuery implements BaseQuery {
         WHERE id = ${db.escape(user.getId())};
         `
     }
-    delete(): string {
-        throw new Error("Method not implemented.");
+    delete(user:UserModel): string {
+        return `
+        DELETE FROM users WHERE id = ${db.escape(user.getId())};
+        `
     }
 }
