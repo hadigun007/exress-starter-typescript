@@ -1,3 +1,4 @@
+import { KeyVal } from '../../model/keyval';
 import { UserModel } from '../../model/user_model';
 import { Momment } from '../../util/moment';
 import db from '../database'
@@ -26,8 +27,10 @@ export class UserQuery implements BaseQuery {
         `
     }
 
-    show(): string {
-        throw new Error("Method not implemented.");
+    show(data:KeyVal): string {
+        return `
+        SELECT * FROM users WHERE ${data.getKey()} = ${db.escape(data.getVal())};
+        `
     }
     delete(): string {
         throw new Error("Method not implemented.");

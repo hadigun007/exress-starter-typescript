@@ -8,6 +8,7 @@ import { SuccessResponse } from "../response/success_response";
 import { JwtUtil } from "../util/jwt_util";
 import { ToArray } from "../util/to_array";
 import { BaseController } from '../interface/base_controller'
+import { KeyVal } from "../model/keyval";
 
 export class UserController implements BaseController {
     index(req: Request, res: Response): any {
@@ -44,8 +45,33 @@ export class UserController implements BaseController {
         })
     }
 
-    show(req: Request, res: Response): Response {
-        throw new Error("Method not implemented.");
+    show(req: Request, res: Response): any {
+
+        const token = JwtUtil.getJwt()
+        const user = new UserModel()
+        const keyval = new KeyVal()
+        const userq = new UserQuery()
+
+        keyval.setKey(req.body["key"])
+        keyval.setVal(req.body["val"])
+
+        if(keyval.validate(keyval) == false) return FailedResponse.bodyFailed(res, "")
+        
+        db.query(userq.show(keyval), (error, result)=>{
+            console.log(error);
+            console.log(result);
+            
+            if (error) return FailedResponse.queryFailed(res, "")
+            if (result.length == 0) return FailedResponse.recordNotFound(res, "", "User")
+
+            const data = ToArray.convertUsers(result)
+
+            SuccessResponse.showSuccess(res, token, data)
+        })
+
+
+
+
     }
     update(req: Request, res: Response): Response {
         throw new Error("Method not implemented.");
@@ -55,28 +81,3 @@ export class UserController implements BaseController {
     }
 
 }
-
-// function create(req: Request, res: Response) {
-//     const token = JwtUtil.getToken(req, res)
-//     const user = req.body as c.CreateUserModel
-//     const verify_token = c2.randomHex(24)
-//     const url = e3.getEmailVerificationUrl(verify_token)
-//     const payload = new EmailVerificationModel()
-//     user.password = p.hashPassword(user.password)
-//     user.verify_token = verify_token
-
-//     if (c.validate(user) == false) return FailedResponse.paramRequestFailed(res, token)
-
-//     db.query(UserQuery.createUser(user), async (error: any, result: any) => {
-//         if (error) return FailedResponse.queryFailed(res, token)
-//         if (result.affectedRows == 0) return FailedResponse.queryFailed(res, token)
-
-//         payload.setUsermae(user.name)
-//         payload.setUrl(url)
-//         payload.setTo(user.email)
-
-//         // const result2 = await e2.emailVerification(payload)
-//         // if (result2 == false) return u.sendEmailfailed(res, '')
-//         SuccessReponse.createSuccess(res, token)
-//     })
-// }

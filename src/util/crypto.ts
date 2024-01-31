@@ -27,19 +27,6 @@ export class Crypto {
         var bytes  = cryptojs.AES.decrypt(ciphertext, config.aes.key);
         return bytes.toString(cryptojs.enc.Utf8);
     }
-
-    // static encryptObject(plaintext:Array<Object>):string {
-    //     return cryptojs.AES.encrypt(JSON.stringify(plaintext), config.aes.key).toString();
-    // }
-
-    // static decryptObject(ciphertext:string):string {
-    //     var bytes  = cryptojs.AES.decrypt(JSON.parse(ciphertext), config.aes.key);
-    //     return bytes.toString(cryptojs.enc.Utf8);
-    // }
 }
 
-// let a = Crypto.encryptString('main')
-// console.log(a);
-let b = Crypto.decryptString("U2FsdGVkX1/htOnimoTZK+jAw5OI/g1UWqLARnTDFDpmb2lNWZgBtOGppj3OSxPDjAIQJL7/rGI1lChf6SEIAQ==")
-console.log(b);
 
