@@ -1,5 +1,5 @@
 import { UserModel } from '../../model/user_model';
-import { Moment } from '../../util/moment';
+import { Momment } from '../../util/moment';
 import db from '../database'
 import { Query } from './query';
 
@@ -18,8 +18,8 @@ export class UserQuery implements Query {
             ${db.escape(user.getPassword())},
             ${db.escape(user.getRole())},
             1,
-            '${Moment.getCurrent()}',
-            '${Moment.getCurrent()}');
+            '${Momment.getCurrent()}',
+            '${Momment.getCurrent()}');
         `
     }
 

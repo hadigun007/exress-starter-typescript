@@ -1,3 +1,4 @@
+import { Momment } from "../../util/moment"
 import db from "../database"
 
 export class StatusMigration {
@@ -5,6 +6,9 @@ export class StatusMigration {
     static table_name = 'statuses'
 
     static migrate() {
+        db.query(`DROP TABLE IF EXISTS users;`, (error, result) => {
+            if (error) return console.log(error)
+        })
 
         db.query(`DROP TABLE IF EXISTS statuses;`, (error, result) => {
             if (error) return console.log(error)
@@ -25,12 +29,12 @@ export class StatusMigration {
         
         db.query(`
         INSERT INTO statuses
-        (id, status_key, status_id, status_name, created_at)
+        (id, status_key, status_id, status_name, created_at, updated_at)
         VALUES 
-        (1, 'users',0 , 'GENEREATE 2FA', null),
-        (2, 'users',1 , 'VERIFY 2FA', null),
-        (3, 'users',2 , 'ACTVE', null),
-        (4, 'users',3 , 'FREEZED', null);
+        (1, 'users',0 , 'GENEREATE 2FA', '${Momment.getCurrent()}', '${Momment.getCurrent()}'),
+        (2, 'users',1 , 'VERIFY 2FA', '${Momment.getCurrent()}', '${Momment.getCurrent()}'),
+        (3, 'users',2 , 'ACTVE', '${Momment.getCurrent()}', '${Momment.getCurrent()}'),
+        (4, 'users',3 , 'FREEZED', '${Momment.getCurrent()}', '${Momment.getCurrent()}');
         `,(error, result)=>{
             if (error) return console.log(error)
             console.log(`✅ seeder table ${this.table_name} berhasil`)

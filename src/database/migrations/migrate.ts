@@ -3,8 +3,8 @@ import db from '../database'
 import { StatusMigration } from "./status_migrations"
 
 function main(){
-    StatusMigration.migrate()
-    UserMigration.migrate()
+    StatusMigration.migrate() // 1
+    UserMigration.migrate() // 2
     db.end()
 
 }

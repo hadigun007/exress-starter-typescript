@@ -25,13 +25,15 @@ export class OTPController {
         if (otp.validate(otp) == false) return FailedResponse.bodyFailed(res, "")
 
         db.query(vtokenq.getByVtoken(otp.getVerifyToken()), (error, result) => {
+
             if (error) return FailedResponse.queryFailed(res, "")
-            if (result[0] == null) return FailedResponse.queryFailed(res, "")
+            if (result[0] == null) return FailedResponse.recordNotFound(res, "", "User")
 
 
             if (result[0].secret_key == null || result[0].secret_key == "") {
                 const newSecret = twofactor.generateSecret({ name: "Starter", account: "root" });
-                db.query(otpq.createSecret(newSecret.secret), (error2, result2) => {
+                console.log(newSecret)
+                db.query(otpq.createSecret(newSecret, result[0].id), (error2, result2) => {
                     if (error2) return FailedResponse.queryFailed(res, "")
                     if (result2.affectedRows == 0) return FailedResponse.queryFailed(res, "")
 
@@ -52,6 +54,7 @@ export class OTPController {
             else {
                 data.setSecretKey(result[0].secret_key)
                 data.setVerifyToken(random)
+                data.setOtpauthUrl(result[0].otpauth_url)
 
                 SuccessResponse.generateOTPResponse(res, '', data)
             }
@@ -61,6 +64,7 @@ export class OTPController {
     static verify(req: Request, res: Response) {
         const otpr = new VerifyOTPRequest()
         const vtokenq = new VerifyTokenQuery()
+        const otpq = new OTPQuery()
         otpr.setOTPCode(req.body["otp_code"])
         otpr.setVerifyToken(req.body["verify_token"])
 
@@ -71,20 +75,50 @@ export class OTPController {
             if (error) return FailedResponse.queryFailed(res, "")
             if (result[0] == null) return FailedResponse.recordNotFound(res, "", "User")
 
-            if (result[0].secret_key != "") {
-
-                const token = JwtUtil.getJwt(result[0].email)
-                console.log(otpr);
+            const token = JwtUtil.getJwt(result[0].email)
+            const verify = twofactor.verifyToken(result[0].secret_key, otpr.getOTPCode().toString());
+            if (verify != null) {
+                console.log("jojo");
                 
-                const verify = twofactor.verifyToken(result[0].secret_key, otpr.getOTPCode().toString());
                 if (verify.delta == 0) {
-                    SuccessResponse.verifyOTPSuccess(res, token)
-                } else {
-                    FailedResponse.verifyOTPFailed(res, '')
+                    console.log("jojo 2");
+                    if (result[0].secret_key != "") {
+                        db.query(otpq.updateOtp(result[0].id, "3"), (error2, result2) => {
+                            console.log(error2);
+                            
+                            if (error2) return FailedResponse.queryFailed(res, "")
+                            if (result2.affectedRows == 0) return FailedResponse.queryFailed(res, "")
+                            
+                            SuccessResponse.verifyOTPSuccess(res, token)
+                        })
+                    } else {
+                        console.log("jojo 3");
+                        SuccessResponse.verifyOTPSuccess(res, token)
+                    }
                 }
+            } else {
+                FailedResponse.verifyOTPFailed(res, '')
             }
+
+
+
+
+
+            // if (verify != null) {
+            //     if (verify.delta == 0) {
+            //         db.query(otpq.updateOtp(result[0].id, "3"), (error2, result2) => {
+            //             if (error2) return FailedResponse.queryFailed(res, "")
+            //             if (result2.affectedRows == 0) return FailedResponse.queryFailed(res, "")
+
+            //             SuccessResponse.verifyOTPSuccess(res, token)
+            //         })
+            //     }
+            //     else {
+            //         FailedResponse.verifyOTPFailed(res, '')
+            //     }
+            // }
+
+            // }
         })
-
-
     }
 }
