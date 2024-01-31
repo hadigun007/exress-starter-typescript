@@ -27,6 +27,7 @@ export class UserController implements BaseController {
     store(req: Request, res: Response): any {
         const new_user = new UserModel()
         const userq = new UserQuery()
+        const token = JwtUtil.getJwt()
         new_user.setName(req.body["name"])
         new_user.setEmail(req.body["email"])
         new_user.setPassword(Crypto.hashPassword(req.body["password"]))
@@ -39,7 +40,7 @@ export class UserController implements BaseController {
             if (error) return FailedResponse.queryFailed(res, "")
             if (result.affectedRows == 0) return FailedResponse.storeFailed(res, "")
 
-            return SuccessResponse.storeSuccess(res, '', null)
+            return SuccessResponse.storeSuccess(res, token, null)
         })
     }
 
