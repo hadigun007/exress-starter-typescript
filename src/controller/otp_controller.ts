@@ -11,11 +11,11 @@ import { VerifyOTPRequest } from "../model/request/verifyotp_request";
 import { VerifyTokenModel } from "../model/verify_token_model";
 const twofactor = require("node-2fa");
 import * as otp from '../interface/otp_controller'
+import { JwtUtil } from "../util/jwt_util";
 
 export class OTPController implements otp.OTPController {
 
-
-    generate(req: Request, res: Response):any {
+    generate(req: Request, res: Response): any {
         const otp = new GenerateOTPRequest()
         const vtokenq = new VerifyTokenQuery()
         const vtoken = new VerifyTokenModel()
@@ -26,16 +26,16 @@ export class OTPController implements otp.OTPController {
         otp.setVerifyToken(req.params["vtoken"])
 
         if (otp.validate(otp) == false) return FailedResponse.bodyFailed(res, "")
-        
+
         db.query(vtokenq.getByVtoken(otp.getVerifyToken()), (error, result) => {
-            
+
             if (error) return FailedResponse.queryFailed(res, "")
             if (result[0] == null) return FailedResponse.recordNotFound(res, "", "User")
-            
+
             console.log(result);
             if (result[0].secret_key == null && result[0].otpauth_url == null) {
                 const newSecret = twofactor.generateSecret({ name: "Starter", account: "root" });
-                
+
                 db.query(otpq.createSecret(newSecret, result[0].id), (error2, result2) => {
                     if (error2) return FailedResponse.queryFailed(res, "")
                     if (result2.affectedRows == 0) return FailedResponse.queryFailed(res, "")
@@ -65,10 +65,13 @@ export class OTPController implements otp.OTPController {
         })
     }
 
-    verify(req: Request, res: Response):any {
+    verify(req: Request, res: Response): any {
         const otpr = new VerifyOTPRequest()
         const vtokenq = new VerifyTokenQuery()
         const otpq = new OTPQuery()
+        const token = JwtUtil.getJwt()
+
+
         otpr.setOTPCode(req.body["otp_code"])
         otpr.setVerifyToken(req.body["verify_token"])
 
@@ -79,50 +82,24 @@ export class OTPController implements otp.OTPController {
             if (error) return FailedResponse.queryFailed(res, "")
             if (result[0] == null) return FailedResponse.recordNotFound(res, "", "User")
 
-            // const token = JwtUtil.getJwt(result[0].email)
+            console.log(result[0].secret_key);
             const verify = twofactor.verifyToken(result[0].secret_key, otpr.getOTPCode().toString());
+
             if (verify != null) {
-                console.log("jojo");
-                
                 if (verify.delta == 0) {
-                    console.log("jojo 2");
-                    if (result[0].secret_key != "") {
-                        db.query(otpq.updateOtp(result[0].id, "3"), (error2, result2) => {
-                            console.log(error2);
-                            
-                            if (error2) return FailedResponse.queryFailed(res, "")
-                            if (result2.affectedRows == 0) return FailedResponse.queryFailed(res, "")
-                            
-                            // SuccessResponse.verifyOTPSuccess(res, token)
-                        })
-                    } else {
-                        console.log("jojo 3");
-                        // SuccessResponse.verifyOTPSuccess(res, token)
-                    }
+                    db.query(otpq.updateOtp(result[0].id, "3"), (error2, result2) => {
+
+                        if (error2) return FailedResponse.queryFailed(res, "")
+                        if (result2.affectedRows == 0) return FailedResponse.queryFailed(res, "")
+
+                        SuccessResponse.verifyOTPSuccess(res, token)
+                    })
+                }else {
+                    FailedResponse.verifyOTPFailed(res, '')
                 }
             } else {
                 FailedResponse.verifyOTPFailed(res, '')
             }
-
-
-
-
-
-            // if (verify != null) {
-            //     if (verify.delta == 0) {
-            //         db.query(otpq.updateOtp(result[0].id, "3"), (error2, result2) => {
-            //             if (error2) return FailedResponse.queryFailed(res, "")
-            //             if (result2.affectedRows == 0) return FailedResponse.queryFailed(res, "")
-
-            //             SuccessResponse.verifyOTPSuccess(res, token)
-            //         })
-            //     }
-            //     else {
-            //         FailedResponse.verifyOTPFailed(res, '')
-            //     }
-            // }
-
-            // }
         })
     }
 
