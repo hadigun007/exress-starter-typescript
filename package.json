@@ -7,12 +7,14 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon src/index.ts",
     "db:migrate": "ts-node src/database/migrations/migrate.ts",
+    "db:faker": "ts-node src/database/faker/faker.ts",
     "build": "tsc"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@faker-js/faker": "^8.4.0",
     "typescript": "^5.3.3"
   },
   "dependencies": {
