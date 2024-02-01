@@ -97,8 +97,6 @@ export class UserModel {
     }
 
     validateLogin(user: UserModel) {
-        console.log(user);
-
         if (
             user.getEmail().length == 0 ||
             user.getPassword().length == 0

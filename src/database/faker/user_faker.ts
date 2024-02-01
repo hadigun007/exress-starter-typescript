@@ -23,7 +23,6 @@ export class userFaker {
             if(error) return console.log(error)
             userFaker.count = userFaker.count - 1;
             if(this.count > 0){
-                console.log(userFaker.count)
                 userFaker.insertData()
             }else{
                 process.exit(0)

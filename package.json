@@ -8,7 +8,7 @@
     "db:migrate": "ts-node src/database/migrations/migrate.ts",
     "db:faker": "ts-node src/database/faker/faker.ts",
     "build": "tsc",
-    "test": "jest --coverage"
+    "test": "jest --watchAll --detectOpenHandles"
   },
   "keywords": [],
   "author": "",

@@ -3,7 +3,7 @@ import { AuthController } from '../controller/auth_controller';
 import { OTPController } from '../controller/otp_controller';
 import {public_middlware} from '../midleware/middleware'
 
-const public_route = express.Router()
+const public_route = express()
 
 public_route.use(public_middlware)
 
