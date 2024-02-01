@@ -58,8 +58,6 @@ export class UserController implements BaseController {
         if(keyval.validate(keyval) == false) return FailedResponse.bodyFailed(res, "")
         
         db.query(userq.show(keyval), (error, result)=>{
-            console.log(error);
-            console.log(result);
             
             if (error) return FailedResponse.queryFailed(res, "")
             if (result.length == 0) return FailedResponse.recordNotFound(res, "", "User")
@@ -89,7 +87,6 @@ export class UserController implements BaseController {
         if(user.valaidateUpdate(user) == false) return FailedResponse.bodyFailed(res, "")
 
         db.query(userq.update(user), (error, result)=>{
-            console.log(error);
             
             if (error) return FailedResponse.queryFailed(res, "")
             if (result.affectedRows == 0) return FailedResponse.recordNotFound(res, "", "User")

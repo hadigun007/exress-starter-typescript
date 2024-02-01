@@ -5,10 +5,12 @@ import private_route from "../../routes/private_routes";
 import config from '../../../config.json'
 import { JwtUtil } from "../../util/jwt_util";
 import {faker} from '@faker-js/faker'
+import { KeyVal } from "../../model/keyval";
 
 
 
 const user = new UserModel()
+const keyval = new KeyVal()
 const token = JwtUtil.getJwt()
 
 
@@ -54,10 +56,23 @@ describe("User", () => {
         .send(user)
         .set({ 'x-api-key': config["api-key"], Accept: 'application/json', 'Authorization':'Bearer '+token})
 
-        console.log(update.body)
-        
         expect(update.status).toEqual(200)
         expect(update.body.message).toEqual('success')
+
+    })
+   
+   
+    it("Show User", async () => {
+        keyval.setKey("id")
+        keyval.setVal("1")
+
+        const show = await request(private_route)
+        .post("/user/show")
+        .send(keyval)
+        .set({ 'x-api-key': config["api-key"], Accept: 'application/json', 'Authorization':'Bearer '+token})
+
+        expect(show.status).toEqual(200)
+        expect(show.body.message).toEqual('success')
 
     })
 
