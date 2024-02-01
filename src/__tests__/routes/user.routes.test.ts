@@ -75,5 +75,17 @@ describe("User", () => {
         expect(show.body.message).toEqual('success')
 
     })
+    
+    
+    it("Delete User", async () => {
+
+        const del = await request(private_route)
+        .delete("/user/delete/10")
+        .set({ 'x-api-key': config["api-key"], Accept: 'application/json', 'Authorization':'Bearer '+token})
+
+        expect(del.status).toEqual(200)
+        expect(del.body.message).toEqual('success')
+
+    })
 
 })
