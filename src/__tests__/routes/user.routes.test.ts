@@ -40,5 +40,25 @@ describe("User", () => {
         expect(create.body.message).toEqual('success')
 
     })
+   
+    it("Update User", async () => {
+        user.setId("5")
+        user.setName(faker.person.fullName())
+        user.setEmail(faker.internet.email())
+        user.setPassword('adminsku')
+        user.setStatusId('3')
+        user.setRole('admin')
+
+        const update = await request(private_route)
+        .put("/user/update")
+        .send(user)
+        .set({ 'x-api-key': config["api-key"], Accept: 'application/json', 'Authorization':'Bearer '+token})
+
+        console.log(update.body)
+        
+        expect(update.status).toEqual(200)
+        expect(update.body.message).toEqual('success')
+
+    })
 
 })
