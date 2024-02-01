@@ -22,6 +22,9 @@ export class AuthController implements  auth.AuthController {
         const verifytokenq = new VerifyTokenQuery()
         const random = Crypto.randomHex(24)
         const data = new LoginResponse()
+
+        console.log(req.body);
+        
         
         user.setEmail(req.body["email"])
         user.setPassword(req.body["password"])

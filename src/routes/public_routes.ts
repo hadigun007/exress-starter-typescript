@@ -1,8 +1,11 @@
 import express from 'express';
 import { AuthController } from '../controller/auth_controller';
 import { OTPController } from '../controller/otp_controller';
+import {public_middlware} from '../midleware/middleware'
 
 const public_route = express.Router()
+
+public_route.use(public_middlware)
 
 const auth = new AuthController()
 const otp = new OTPController()
