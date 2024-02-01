@@ -2,7 +2,7 @@ import express from 'express';
 import { UserController } from '../controller/user_controller';
 import {private_middlware} from '../midleware/middleware';
 
-const private_route = express.Router()
+const private_route = express()
 const userc = new UserController()
 
 private_route.use(private_middlware)
